@@ -1,0 +1,90 @@
+{
+	"devicesWithCleaning": [
+		{
+			"mpointName": "OPC-UA",
+			"datatypeName": "",
+			"sensorsWithSpecificCleaning": [
+				{
+					"sensorName": "Temperature",
+					"cleaningMethod": "specific_opc-ua_cleaning",
+					"windowLen": 10,
+					"standardDeviation": 5
+				}
+			],
+			"defaultCleaning": "exponentialSmoother",
+			"defaultWindowLen": 20,
+			"defaultStandardDeviation": 3
+		},
+		{
+			"mpointName": "Laddstolpe",
+			"datatypeName": "General inputs",
+			"sensorsWithSpecificCleaning": [
+				{
+					"sensorName": "Global radiation",
+					"cleaningMethod": "exponentialSmoother",
+					"windowLen": 20,
+					"standardDeviation": 5
+				}
+			],
+			"defaultCleaning": "exponentialSmoother",
+			"defaultWindowLen": 20,
+			"defaultStandardDeviation": 5
+		},
+		{
+			"mpointName": "ABB Inverter",
+			"datatypeName": "General inputs",
+			"sensorsWithSpecificCleaning": [],
+			"defaultCleaning": "exponentialSmoother",
+			"defaultWindowLen": 20,
+			"defaultStandardDeviation": 3
+		},
+		{
+			"mpointName": "ELTEK VALERE Inverter",
+			"datatypeName": "General inputs",
+			"sensorsWithSpecificCleaning": [],
+			"defaultCleaning": "exponentialSmoother",
+			"defaultWindowLen": 20,
+			"defaultStandardDeviation": 3
+		},
+		{
+			"mpointName": "SMA Inverter",
+			"datatypeName": "General inputs",
+			"sensorsWithSpecificCleaning": [],
+			"defaultCleaning": "exponentialSmoother",
+			"defaultWindowLen": 20,
+			"defaultStandardDeviation": 3
+		},
+		{
+			"mpointName": "SMA Inverter",
+			"datatypeName": "Total power",
+			"sensorsWithSpecificCleaning": [],
+			"defaultCleaning": "exponentialSmoother",
+			"defaultWindowLen": 20,
+			"defaultStandardDeviation": 3
+		},
+		{
+			"mpointName": "ELTEK VALERE Inverter",
+			"datatypeName": "Total power",
+			"sensorsWithSpecificCleaning": [],
+			"defaultCleaning": "exponentialSmoother",
+			"defaultWindowLen": 20,
+			"defaultStandardDeviation": 3
+		},
+		{
+			"mpointName": "ABB Inverter",
+			"datatypeName": "Total power",
+			"sensorsWithSpecificCleaning": [],
+			"defaultCleaning": "exponentialSmoother",
+			"defaultWindowLen": 20,
+			"defaultStandardDeviation": 3
+		},
+		{
+			"mpointName": "Laddstolpe",
+			"datatypeName": "Total power",
+			"sensorsWithSpecificCleaning": [],
+			"defaultCleaning": "exponentialSmoother",
+			"defaultWindowLen": 20,
+			"defaultStandardDeviation": 3
+		}
+	]
+}
