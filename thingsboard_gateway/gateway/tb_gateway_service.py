@@ -413,12 +413,12 @@ class TBGatewayService:
         i = 0
         # build a string in the correct format of the dictionary that ThingsBoard server is expecting
         dictionary_in_string_format = '{"'
-        for telemetry in data["telemetry"][0]["values"]:
+        for telemetry in data["telemetry"]["values"]:
             dictionary_in_string_format += telemetry
             dictionary_in_string_format += '":'
             dictionary_in_string_format += str(
                 self.__list_of_queues[index_of_device][i][self.index_of_telemetry][-1])
-            if i < (len(data["telemetry"][0]["values"]) - 1):
+            if i < (len(data["telemetry"]["values"]) - 1):
                 dictionary_in_string_format += ', "'
             else:
                 dictionary_in_string_format += '}'
@@ -427,8 +427,8 @@ class TBGatewayService:
         # convert string to dictionary
         new_dictionary = eval(dictionary_in_string_format)
         # update old dictionary to have the correct values
-        data["telemetry"][0]["values"].clear()
-        data["telemetry"][0]["values"].update(new_dictionary)
+        data["telemetry"]["values"].clear()
+        data["telemetry"]["values"].update(new_dictionary)
 
 
 

@@ -38,7 +38,7 @@ class DataCleaning:
 		try:
 			newDeviceQueue = []
 			# add each sensor in incoming device to sub array in list_of_devices (that exists in tb_gateway_service.py)
-			for telemetry in data["telemetry"][0]["values"]:
+			for telemetry in data["telemetry"]["values"]:
 				newDeviceQueue.append(self.getTelemetryData(data, telemetry))
 			return newDeviceQueue
 		except Exception as e:
@@ -67,8 +67,8 @@ class DataCleaning:
 			deviceArray.append(telemetry)
 
 			# add data point and the timestamp
-			telemetryArray.append(self.check_type(data["telemetry"][0]["values"][telemetry]))			# return obvious deviation if data point is NaN
-			timeseriesArray.append(data["telemetry"][0]["ts"])
+			telemetryArray.append(self.check_type(data["telemetry"]["values"][telemetry]))			# return obvious deviation if data point is NaN
+			timeseriesArray.append(data["telemetry"]["ts"])
 
 			# add a dictionary in which cleaning related data is stored
 			series = defaultdict(partial(np.ndarray, shape=(1, 1), dtype='float32'))
@@ -85,11 +85,11 @@ class DataCleaning:
 		try:
 			i = 0
 
-			for telemetry in data["telemetry"][0]["values"]:
+			for telemetry in data["telemetry"]["values"]:
 				series = deviceList[deviceIndex][i][self.indexOfSeries]
 
 				# Control data type for observed value
-				data_point = self.check_type(data["telemetry"][0]["values"][telemetry])
+				data_point = self.check_type(data["telemetry"]["values"][telemetry])
 				# get method and other params from cleaning config
 				cleaningMethod, window_len, std = self.get_cleaning_method(deviceList, deviceIndex, telemetry)
 				debug_data = [0]
@@ -106,7 +106,7 @@ class DataCleaning:
 						data_point, debug_data = self._convolutionSmoother(data_point, series, window_len, std)
 
 					if debug_data[0] == 1:
-						time_of_cleaning = datetime.datetime.utcfromtimestamp(int(data["telemetry"][0]["ts"]) / 1000).strftime('%Y-%m-%d %H:%M:%S')
+						time_of_cleaning = datetime.datetime.utcfromtimestamp(int(data["telemetry"]["ts"]) / 1000).strftime('%Y-%m-%d %H:%M:%S')
 						strerror = "# -- Outlier detected - " + str(time_of_cleaning)+ " " + str(deviceList[deviceIndex][i][self.indexOfDeviceName])+ " " + str(deviceList[deviceIndex][i][self.indexOfSensorName]) +\
 								   "\t\tObserved value- " + str(debug_data[1]) + " Lower boundary- " + str(debug_data[2]) + " Upper boundary- " + str(debug_data[3]) + " Corrected value to- " + str(debug_data[4])
 						logclean.debug(str(strerror))
@@ -119,7 +119,7 @@ class DataCleaning:
 
 				# add data point with timestamp to time series
 				deviceList[deviceIndex][i][self.indexOfTelemetry].append(data_point)
-				deviceList[deviceIndex][i][self.indexOfTimeSeries].append(data["telemetry"][0]["ts"])  # adding timeseries
+				deviceList[deviceIndex][i][self.indexOfTimeSeries].append(data["telemetry"]["ts"])  # adding timeseries
 
 				i += 1
 
