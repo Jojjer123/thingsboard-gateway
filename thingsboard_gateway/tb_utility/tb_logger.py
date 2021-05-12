@@ -29,6 +29,7 @@ class TBLoggerHandler(logging.Handler):
                         'extension',
                         'converter',
                         'connector',
+                        'cleaning',
                         'tb_connection'
                         ]
         for logger in self.loggers:
@@ -68,6 +69,7 @@ class TBLoggerHandler(logging.Handler):
                        'extension',
                        'converter',
                        'connector',
+                       'cleaning',
                        'tb_connection'
                        ]
         for logger_name in logger_names:

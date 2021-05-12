@@ -36,6 +36,8 @@ from thingsboard_gateway.storage.file_event_storage import FileEventStorage
 from thingsboard_gateway.tb_utility.tb_gateway_remote_configurator import RemoteConfigurator
 from thingsboard_gateway.tb_utility.tb_remote_shell import RemoteShell
 
+from thingsboard_gateway.cleaning.clean_data import DataCleaning
+
 
 
 log = logging.getLogger('service')
@@ -54,6 +56,9 @@ DEFAULT_CONNECTORS = {
             "snmp": "SNMPConnector",
         }
 
+def install(package):
+    subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+
 class TBGatewayService:
     def __init__(self, config_file=None):
         self.stopped = False
@@ -71,6 +76,28 @@ class TBGatewayService:
         global log
         log = logging.getLogger('service')
         log.info("Gateway starting...")
+
+        # Check for installed packages
+        try:
+            install("numpy")
+            log.info("Installed numpy package")
+
+        except:
+            log.info("numpy already installed.")
+
+        try:
+            install("tsmoothie")
+            log.info("Installed tsmoothie package")
+
+        except:
+            log.info("Tsmoothie already installed.")
+
+        # initating DataCleaning
+        self.__data_cleaning = DataCleaning()
+        # initiate list that is persistant in memory which will hold the historical data points for each time series.
+        self.__list_of_queues = []
+        self.index_of_telemetry = 2
+
         self.__updater = TBUpdater()
         self.__updates_check_period_ms = 300000
         self.__updates_check_time = 0
@@ -368,6 +395,42 @@ class TBGatewayService:
             data["telemetry"] = telemetry_with_ts
         else:
             data["telemetry"] = {"ts": int(time() * 1000), "values": telemetry}
+
+
+
+        # get the index of the device in the list of devices
+        index_of_device = self.__data_cleaning.doesDeviceExist(self.__list_of_queues, data)
+        # if no device yet exist add the device
+        if index_of_device == -1:
+            self.__list_of_queues.append(self.__data_cleaning.createDevice(self.__list_of_queues, data))
+        # else add the telemetry to the device
+        else:
+            self.__data_cleaning.addTelemetry(self.__list_of_queues, data, index_of_device)
+
+        # check if cleaning is specified for the current device in cleaning.json
+        self.__data_cleaning.check_if_cleaning_is_specified_for_all(self.__list_of_queues)
+
+        i = 0
+        # build a string in the correct format of the dictionary that ThingsBoard server is expecting
+        dictionary_in_string_format = '{"'
+        for telemetry in data["telemetry"][0]["values"]:
+            dictionary_in_string_format += telemetry
+            dictionary_in_string_format += '":'
+            dictionary_in_string_format += str(
+                self.__list_of_queues[index_of_device][i][self.index_of_telemetry][-1])
+            if i < (len(data["telemetry"][0]["values"]) - 1):
+                dictionary_in_string_format += ', "'
+            else:
+                dictionary_in_string_format += '}'
+            i += 1
+
+        # convert string to dictionary
+        new_dictionary = eval(dictionary_in_string_format)
+        # update old dictionary to have the correct values
+        data["telemetry"][0]["values"].clear()
+        data["telemetry"][0]["values"].update(new_dictionary)
+
+
 
         json_data = dumps(data)
         save_result = self._event_storage.put(json_data)

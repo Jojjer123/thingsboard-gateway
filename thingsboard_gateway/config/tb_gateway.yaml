@@ -1,11 +1,10 @@
 thingsboard:
-  host: thingsboard.cloud
+  host: 192.168.1.92
   port: 1883
   remoteShell: false
   remoteConfiguration: false
-  statsSendPeriodInSeconds: 3600
   security:
-    accessToken: PUT_YOUR_GW_ACCESS_TOKEN_HERE
+    accessToken: 1234
   qos: 1
 storage:
   type: memory
@@ -21,7 +20,7 @@ connectors:
     name: MQTT Broker Connector
     type: mqtt
     configuration: mqtt.json
-
+#
 #  -
 #    name: Modbus Connector
 #    type: modbus
