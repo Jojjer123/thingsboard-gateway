@@ -17,6 +17,14 @@
 		},
 		{
 			"mpointName": "Laddstolpe",
+			"datatypeName": "",
+			"sensorsWithSpecificCleaning": [],
+			"defaultCleaning": "kmeans",
+			"defaultWindowLen": 20,
+			"defaultStandardDeviation": 5
+		},
+		{
+			"mpointName": "Laddstolpe",
 			"datatypeName": "General inputs",
 			"sensorsWithSpecificCleaning": [
 				{

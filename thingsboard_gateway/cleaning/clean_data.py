@@ -10,6 +10,7 @@ from tsmoothie import ExponentialSmoother, ConvolutionSmoother
 import datetime
 import threading
 from time import sleep
+from sklearn.cluster import KMeans
 
 import logging
 import logging.config
@@ -104,6 +105,8 @@ class DataCleaning:
 						data_point, debug_data = self._exponentialSmoother(data_point, series, window_len, std)
 					elif(cleaningMethod == "convolutionSmoother"):
 						data_point, debug_data = self._convolutionSmoother(data_point, series, window_len, std)
+					elif (cleaningMethod == "kmeans"):
+						data_point, debug_data = self._kmeans(data_point, series, window_len, std)
 
 					if debug_data[0] == 1:
 						time_of_cleaning = datetime.datetime.utcfromtimestamp(int(data["telemetry"]["ts"]) / 1000).strftime('%Y-%m-%d %H:%M:%S')
@@ -206,13 +209,14 @@ class DataCleaning:
 
 			# returns the current cleaning method
 			deviceNameToCheck = deviceList[deviceIndex][i][self.indexOfDeviceName]
-
+			#print("looking for :", deviceNameToCheck)
 			i = 0
 			for mpoint in self.cleaningConfig["devicesWithCleaning"]:
 				if (self.cleaningConfig["devicesWithCleaning"][i]["datatypeName"] != ""):
 					nameOfDevice = self.cleaningConfig["devicesWithCleaning"][i]["mpointName"] + ", " + self.cleaningConfig["devicesWithCleaning"][i]["datatypeName"]
 				else:
 					nameOfDevice = self.cleaningConfig["devicesWithCleaning"][i]["mpointName"]
+				#print("name: ", nameOfDevice)
 				if (nameOfDevice == deviceNameToCheck):
 					j = 0
 					for specificCleaning in self.cleaningConfig["devicesWithCleaning"][i]["sensorsWithSpecificCleaning"]:
@@ -220,11 +224,45 @@ class DataCleaning:
 							return specificCleaning["cleaningMethod"], specificCleaning["windowLen"], specificCleaning["standardDeviation"]
 						j += 1
 					break
+				#print("1111111111111111111111111111111111")
+				#print(self.cleaningConfig["devicesWithCleaning"][i])
 				i += 1
+			#print("#####################################")
+			#print(self.cleaningConfig["devicesWithCleaning"][i])
 			return self.cleaningConfig["devicesWithCleaning"][i]["defaultCleaning"], \
 				   self.cleaningConfig["devicesWithCleaning"][i]["defaultWindowLen"], self.cleaningConfig["devicesWithCleaning"][i]["defaultStandardDeviation"]
 		except Exception as e:
 			log.exception(e)
+
+	def _kmeans(self, data_point, series, window_len, std):
+		#print("in kmeans")
+		kmeans = KMeans(n_clusters=2)
+		clean = np.column_stack([0, 0])
+		for i in series["original"]:
+			temp = [[0, i]]
+			clean = np.vstack([clean, temp])
+		
+		temp = [[0, data_point]]
+		clean = np.vstack([clean, temp])
+
+		kmeans.fit(clean)
+		y_kmeans = kmeans.predict(clean)
+		j = 0
+
+		# print(y_kmeans)
+		# print(clean[len(clean) - 20:len(clean)])
+		# centers = kmeans.clustercenters
+
+		#std = np.std(clean[:, 1])
+
+		#print("STD: ", 3 * std, "Average: ", np.average(clean[:, 1]), "boundary: ", np.average(clean[:, 1]) + 3 * std)
+
+
+
+		debug_data = [1, data_point, 3, 3, data_point]
+
+
+		return data_point, debug_data
 
 	def _exponentialSmoother(self, data_point, series, window_len, std):
 		# exponential smoothing algorithm

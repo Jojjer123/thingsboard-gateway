@@ -38,6 +38,7 @@ from thingsboard_gateway.tb_utility.tb_remote_shell import RemoteShell
 
 from thingsboard_gateway.cleaning.clean_data import DataCleaning
 
+import json
 
 
 log = logging.getLogger('service')
@@ -397,6 +398,9 @@ class TBGatewayService:
             data["telemetry"] = {"ts": int(time() * 1000), "values": telemetry}
 
 
+        # FOR BENCHMARKING ONLY!!!
+        startingTime = time()
+
 
         # get the index of the device in the list of devices
         index_of_device = self.__data_cleaning.doesDeviceExist(self.__list_of_queues, data)
@@ -429,6 +433,25 @@ class TBGatewayService:
         # update old dictionary to have the correct values
         data["telemetry"]["values"].clear()
         data["telemetry"]["values"].update(new_dictionary)
+
+        
+        # FOR BENCHMARKING ONLY!!!
+        #sleep(1)
+        endOfTime = time()
+
+        try:
+            with open("test.json") as f:
+                result_text = json.loads(f.read())
+
+            result_text["timeArr"].append({"time": endOfTime-startingTime})
+
+            with open("test.json", "w") as f:
+                json.dump(result_text, f)
+        except:
+            with open("test.json", "x") as f:
+                print("***********************first_time***********************")
+                timeToAdd = endOfTime-startingTime
+                json.dump({"timeArr": [{"time": timeToAdd}]}, f)#endOfTime-startingTime}]}, f)
 
 
 

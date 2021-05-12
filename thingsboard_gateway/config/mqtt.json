@@ -10,7 +10,71 @@
   },
   "mapping": [
     {
-      "topicFilter": "internal/mqtt-stresser/e6dc011254b2/worker0-1",
+      "topicFilter": "internal/mqtt-stresser/9c83af580288/worker0-1",
+      "converter": {
+        "type": "json",
+        "deviceNameJsonExpression": "${mPoint.name}",
+        "deviceTypeJsonExpression": "default",
+        "timeout": 60000,
+        "attributes": [],
+        "timeseries": [
+          {
+            "key": "Global radiation",
+            "type": "double",
+            "value": "${channels[0].values[0].value}"
+          },
+          {
+            "key": "Radiation 40 degrees",
+            "type": "double",
+            "value": "${channels[1].values[0].value}"
+          },
+          {
+            "key": "Radiation 30 degrees",
+            "type": "double",
+            "value": "${channels[2].values[0].value}"
+          },
+          {
+            "key": "Indirect Radiation",
+            "type": "double",
+            "value": "${channels[3].values[0].value}"
+          }
+        ]
+      }
+    },
+    {
+      "topicFilter": "internal/mqtt-stresser/45b226da0efd/worker0-1",
+      "converter": {
+        "type": "json",
+        "deviceNameJsonExpression": "${mPoint.name}",
+        "deviceTypeJsonExpression": "default",
+        "timeout": 60000,
+        "attributes": [],
+        "timeseries": [
+          {
+            "key": "Global radiation",
+            "type": "double",
+            "value": "${channels[0].values[0].value}"
+          },
+          {
+            "key": "Radiation 40 degrees",
+            "type": "double",
+            "value": "${channels[1].values[0].value}"
+          },
+          {
+            "key": "Radiation 30 degrees",
+            "type": "double",
+            "value": "${channels[2].values[0].value}"
+          },
+          {
+            "key": "Indirect Radiation",
+            "type": "double",
+            "value": "${channels[3].values[0].value}"
+          }
+        ]
+      }
+    },
+    {
+      "topicFilter": "internal/mqtt-stresser/45b226da0efd/worker1-1",
       "converter": {
         "type": "json",
         "deviceNameJsonExpression": "${mPoint.name}",
